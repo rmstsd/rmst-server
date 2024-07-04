@@ -45,7 +45,7 @@ router.post(
     fse.ensureDirSync(versionDirPath)
 
     Object.keys(files).forEach(key => {
-      const itemFile = files[key]
+      const itemFile = files[key] as any
 
       const fileReader = fse.createReadStream(itemFile.filepath)
       const filePath = path.join(versionDirPath, `/${itemFile.originalFilename}`)
