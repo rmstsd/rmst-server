@@ -26,6 +26,9 @@ importers:
       koa2-cors:
         specifier: ^2.0.6
         version: 2.0.6
+      semver-max:
+        specifier: ^1.0.0
+        version: 1.0.0
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -732,6 +735,13 @@ packages:
 
   secure-compare@3.0.1:
     resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
+
+  semver-max@1.0.0:
+    resolution: {integrity: sha512-63Ppi7lcIWytyT23zTDiMi/wq6M6UdHf+133uJWPVDVHu2OPRCdfveC1X5KyX8HkYnS8YcLYgtQTohYkFXVpzA==}
+
+  semver@5.7.2:
+    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -1621,6 +1631,12 @@ snapshots:
   safer-buffer@2.1.2: {}
 
   secure-compare@3.0.1: {}
+
+  semver-max@1.0.0:
+    dependencies:
+      semver: 5.7.2
+
+  semver@5.7.2: {}
 
   set-function-length@1.2.2:
     dependencies:

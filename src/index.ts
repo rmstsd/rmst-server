@@ -4,6 +4,8 @@ import * as path from 'node:path'
 import Router from 'koa-router'
 import cors from 'koa2-cors'
 
+import semverMax from 'semver-max'
+
 import fse from 'fs-extra'
 
 const router = new Router()
@@ -11,13 +13,13 @@ const app = new Koa()
 
 app.use(cors())
 
-router.get('/latest', (ctx, next) => {
-  ctx.body = 'xxx'
-
-  ctx.redirect('http://localhost:3222')
-})
-
 const dirPath = path.join(__dirname, './../public')
+
+router.get('/latest', (ctx, next) => {
+  const filesName = fse.readdirSync(dirPath).filter(item => fse.statSync(path.join(dirPath, item)).isDirectory())
+  const max = semverMax(...filesName)
+  ctx.redirect(`http://localhost:3222/${max}`)
+})
 
 router.post(
   '/uploadFile',
