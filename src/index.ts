@@ -15,6 +15,10 @@ app.use(cors())
 
 const dirPath = path.join(__dirname, './../public')
 
+router.get('/', (ctx, next) => {
+  ctx.body = `rmst-${Math.random()}`
+})
+
 router.get('/latest', (ctx, next) => {
   const filesName = fse.readdirSync(dirPath).filter(item => fse.statSync(path.join(dirPath, item)).isDirectory())
   const max = semverMax(...filesName)
