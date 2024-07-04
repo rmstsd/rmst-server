@@ -29,30 +29,21 @@ router.post(
   }),
   async (ctx, next) => {
     const files = ctx.request.files
-    console.log('ctx.request.files', ctx.request.files)
-
-    ctx.body = '成功'
-
     const body = ctx.request.body
+
+    // koaBody 中间件会自动将 form-data 中的文件放入 ctx.request.files 字段, 将其他放入 ctx.request.body 字段
+    console.log('--- ctx.request.files', Object.keys(ctx.request.files))
     console.log('--- body', body)
 
     const versionDirPath = path.join(dirPath, body.version)
-
     fse.ensureDirSync(versionDirPath)
 
     Object.keys(files).forEach(key => {
-      if (key === 'version') {
-        return
-      }
-
       const itemFile = files[key]
 
       const fileReader = fse.createReadStream(itemFile.filepath)
-
       const filePath = path.join(versionDirPath, `/${itemFile.originalFilename}`)
-      console.log('filePath', filePath)
 
-      // fse.ensureFileSync(filePath)
       const writeStream = fse.createWriteStream(filePath)
 
       fileReader.pipe(writeStream)
