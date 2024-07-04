@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "rmst-server",
+  "buildCommand": "tsc",
   "builds": [
     {
       "src": "dist/index.js",
