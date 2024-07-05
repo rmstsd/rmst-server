@@ -92,5 +92,5 @@ router.post(
 app.use(router.routes())
 
 app.listen(1666, () => {
-  console.log('启动')
+  console.log('启动', 1666)
 })
