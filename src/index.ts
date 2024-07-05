@@ -22,6 +22,14 @@ router.get('/', (ctx, next) => {
   ctx.body = `rmst-${Math.random()}`
 })
 
+router.get('/get-test', (ctx, next) => {
+  ctx.body = `get-test`
+})
+
+router.post('/post-test', (ctx, next) => {
+  ctx.body = `post-test`
+})
+
 // router.get('/latest', (ctx, next) => {
 //   const filesName = fse.readdirSync(dirPath).filter(item => fse.statSync(path.join(dirPath, item)).isDirectory())
 //   const max = semverMax(...filesName)
@@ -42,6 +50,10 @@ router.post(
   async (ctx, next) => {
     const files = ctx.request.files
     const body = ctx.request.body
+    if (!body?.version) {
+      ctx.body = 'version 不能为空'
+      return
+    }
 
     // koaBody 中间件会自动将 form-data 中的文件放入 ctx.request.files 字段, 将其他放入 ctx.request.body 字段
     console.log('--- ctx.request.files', Object.keys(ctx.request.files))
@@ -66,8 +78,6 @@ router.post(
         })
       })
     )
-
-    console.log('fse.readdirSync(dirPath)', fse.readdirSync(versionDirPath))
 
     const latestDirPath = path.join(dirPath, 'latest')
 
