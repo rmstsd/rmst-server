@@ -81,22 +81,28 @@ const koa_body_1 = __importDefault(require('koa-body'))
 const path = __importStar(require('node:path'))
 const koa_router_1 = __importDefault(require('koa-router'))
 const koa2_cors_1 = __importDefault(require('koa2-cors'))
-const semver_max_1 = __importDefault(require('semver-max'))
+const koa_static_server_1 = __importDefault(require('koa-static-server'))
 const fs_extra_1 = __importDefault(require('fs-extra'))
 const router = new koa_router_1.default()
 const app = new koa_1.default()
+app.use((0, koa_static_server_1.default)({ rootDir: path.join(__dirname, './../public'), rootPath: '/public' }))
 app.use((0, koa2_cors_1.default)())
 const dirPath = path.join(__dirname, './../public')
 router.get('/', (ctx, next) => {
   ctx.body = `rmst-${Math.random()}`
 })
-router.get('/latest', (ctx, next) => {
-  const filesName = fs_extra_1.default
-    .readdirSync(dirPath)
-    .filter(item => fs_extra_1.default.statSync(path.join(dirPath, item)).isDirectory())
-  const max = (0, semver_max_1.default)(...filesName)
-  ctx.redirect(`http://localhost:3222/${max}`)
+router.get('/get-test', (ctx, next) => {
+  ctx.body = `get-test`
 })
+router.post('/post-test', (ctx, next) => {
+  ctx.body = `post-test`
+})
+// router.get('/latest', (ctx, next) => {
+//   const filesName = fse.readdirSync(dirPath).filter(item => fse.statSync(path.join(dirPath, item)).isDirectory())
+//   const max = semverMax(...filesName)
+//   fse.copySync(path.join(dirPath, max), path.join(dirPath, 'latest'))
+//   ctx.redirect(`http://localhost:1666/latest`)
+// })
 router.post(
   '/uploadFile',
   (0, koa_body_1.default)({
@@ -109,22 +115,36 @@ router.post(
     __awaiter(void 0, void 0, void 0, function* () {
       const files = ctx.request.files
       const body = ctx.request.body
+      if (!(body === null || body === void 0 ? void 0 : body.version)) {
+        ctx.body = 'version 不能为空'
+        return
+      }
       // koaBody 中间件会自动将 form-data 中的文件放入 ctx.request.files 字段, 将其他放入 ctx.request.body 字段
       console.log('--- ctx.request.files', Object.keys(ctx.request.files))
       console.log('--- body', body)
       const versionDirPath = path.join(dirPath, body.version)
       fs_extra_1.default.ensureDirSync(versionDirPath)
-      Object.keys(files).forEach(key => {
-        const itemFile = files[key]
-        const fileReader = fs_extra_1.default.createReadStream(itemFile.filepath)
-        const filePath = path.join(versionDirPath, `/${itemFile.originalFilename}`)
-        const writeStream = fs_extra_1.default.createWriteStream(filePath)
-        fileReader.pipe(writeStream)
-      })
+      yield Promise.all(
+        Object.keys(files).map(key => {
+          return new Promise(resolve => {
+            const itemFile = files[key]
+            const fileReader = fs_extra_1.default.createReadStream(itemFile.filepath)
+            const filePath = path.join(versionDirPath, `/${itemFile.originalFilename}`)
+            const writeStream = fs_extra_1.default.createWriteStream(filePath)
+            fileReader.pipe(writeStream).on('finish', () => {
+              resolve(null)
+            })
+          })
+        })
+      )
+      const latestDirPath = path.join(dirPath, 'latest')
+      fs_extra_1.default.ensureDirSync(latestDirPath)
+      fs_extra_1.default.removeSync(latestDirPath)
+      fs_extra_1.default.copySync(versionDirPath, latestDirPath)
       ctx.body = '成功'
     })
 )
 app.use(router.routes())
-app.listen(3111, () => {
-  console.log('启动')
+app.listen(1666, () => {
+  console.log('启动', 1666)
 })

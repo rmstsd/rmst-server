@@ -65,7 +65,7 @@ router.post(
     await Promise.all(
       Object.keys(files).map(key => {
         return new Promise(resolve => {
-          const itemFile = files[key] as any
+          const itemFile = files[key]
 
           const fileReader = fse.createReadStream(itemFile.filepath)
           const filePath = path.join(versionDirPath, `/${itemFile.originalFilename}`)
