@@ -44,10 +44,9 @@ const koa_static_server_1 = __importDefault(require("koa-static-server"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const router = new koa_router_1.default();
 const app = new koa_1.default();
-const cwd = process.cwd();
-app.use((0, koa_static_server_1.default)({ rootDir: path.join(cwd, 'public'), rootPath: '/public' }));
+const publicDirPath = './public';
+app.use((0, koa_static_server_1.default)({ rootDir: publicDirPath, rootPath: '/public' }));
 app.use((0, koa2_cors_1.default)());
-const dirPath = path.join(cwd, 'public');
 router.get('/', (ctx, next) => {
     ctx.body = `rmst-${Math.random()}`;
 });
@@ -78,7 +77,8 @@ router.post('/uploadFile', (0, koa_body_1.default)({
     // koaBody 中间件会自动将 form-data 中的文件放入 ctx.request.files 字段, 将其他放入 ctx.request.body 字段
     console.log('--- ctx.request.files', Object.keys(ctx.request.files));
     console.log('--- body', body);
-    const versionDirPath = path.join(dirPath, body.version);
+    const versionDirPath = path.join(publicDirPath, body.version);
+    console.log('versionDirPath', versionDirPath);
     fs_extra_1.default.ensureDirSync(versionDirPath);
     yield Promise.all(Object.keys(files).map(key => {
         return new Promise(resolve => {
@@ -91,7 +91,8 @@ router.post('/uploadFile', (0, koa_body_1.default)({
             });
         });
     }));
-    const latestDirPath = path.join(dirPath, 'latest');
+    const latestDirPath = path.join(publicDirPath, 'latest');
+    console.log('latestDirPath', latestDirPath);
     fs_extra_1.default.ensureDirSync(latestDirPath);
     fs_extra_1.default.removeSync(latestDirPath);
     fs_extra_1.default.copySync(versionDirPath, latestDirPath);

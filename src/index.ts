@@ -13,12 +13,10 @@ import fse from 'fs-extra'
 const router = new Router()
 const app = new Koa()
 
-const cwd = process.cwd()
+const publicDirPath = './public'
 
-app.use(koaStaticServer({ rootDir: path.join(cwd, 'public'), rootPath: '/public' }))
+app.use(koaStaticServer({ rootDir: publicDirPath, rootPath: '/public' }))
 app.use(cors())
-
-const dirPath = path.join(cwd, 'public')
 
 router.get('/', (ctx, next) => {
   ctx.body = `rmst-${Math.random()}`
@@ -61,7 +59,8 @@ router.post(
     console.log('--- ctx.request.files', Object.keys(ctx.request.files))
     console.log('--- body', body)
 
-    const versionDirPath = path.join(dirPath, body.version)
+    const versionDirPath = path.join(publicDirPath, body.version)
+    console.log('versionDirPath', versionDirPath)
     fse.ensureDirSync(versionDirPath)
 
     await Promise.all(
@@ -81,7 +80,8 @@ router.post(
       })
     )
 
-    const latestDirPath = path.join(dirPath, 'latest')
+    const latestDirPath = path.join(publicDirPath, 'latest')
+    console.log('latestDirPath', latestDirPath)
 
     fse.ensureDirSync(latestDirPath)
     fse.removeSync(latestDirPath)
