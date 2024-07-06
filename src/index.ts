@@ -13,10 +13,12 @@ import fse from 'fs-extra'
 const router = new Router()
 const app = new Koa()
 
-app.use(koaStaticServer({ rootDir: path.join(__dirname, './../public'), rootPath: '/public' }))
+const cwd = process.cwd()
+
+app.use(koaStaticServer({ rootDir: path.join(cwd, 'public'), rootPath: '/public' }))
 app.use(cors())
 
-const dirPath = path.join(__dirname, './../public')
+const dirPath = path.join(cwd, 'public')
 
 router.get('/', (ctx, next) => {
   ctx.body = `rmst-${Math.random()}`

@@ -44,9 +44,10 @@ const koa_static_server_1 = __importDefault(require("koa-static-server"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const router = new koa_router_1.default();
 const app = new koa_1.default();
-app.use((0, koa_static_server_1.default)({ rootDir: path.join(__dirname, './../public'), rootPath: '/public' }));
+const cwd = process.cwd();
+app.use((0, koa_static_server_1.default)({ rootDir: path.join(cwd, 'public'), rootPath: '/public' }));
 app.use((0, koa2_cors_1.default)());
-const dirPath = path.join(__dirname, './../public');
+const dirPath = path.join(cwd, 'public');
 router.get('/', (ctx, next) => {
     ctx.body = `rmst-${Math.random()}`;
 });
